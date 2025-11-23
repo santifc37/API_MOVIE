@@ -1,0 +1,21 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace API_MOVIE.DAL.Models.Dto
+{
+    public class MovieCreateUpdateDto
+    {
+
+        [Required(ErrorMessage = "El nombre de la categoria es obligatorio")]
+        [StringLength(100, ErrorMessage = "Máximo permitido: 100 dígitos.")]
+        public string name { get; set; }
+
+
+        [Required(ErrorMessage = "La duración es obligatoria")] 
+        public int duration { get; set; }
+
+
+        [Required(ErrorMessage = "La clasification es obligatorio")]
+        [StringLength(100, ErrorMessage = "Máximo permitido: 10 dígitos.")] 
+        public string clasification { get; set; }
+    }
+}
