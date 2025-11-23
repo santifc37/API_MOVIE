@@ -4,7 +4,7 @@ namespace API_MOVIE.DAL.Models
 {
     public class Movie
     {
-
+      
         [Key]
         public virtual int id { get; set; }
 

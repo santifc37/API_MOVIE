@@ -2,7 +2,7 @@
 
 namespace API_MOVIE.DAL.Models.Dto
 {
-    public class MovieCreateUpdateDto
+    public class MovieCreateDto
     {
 
         [Required(ErrorMessage = "El nombre de la categoria es obligatorio")]
@@ -10,12 +10,15 @@ namespace API_MOVIE.DAL.Models.Dto
         public string name { get; set; }
 
 
-        [Required(ErrorMessage = "La duración es obligatoria")] 
+        [Required(ErrorMessage = "La duración es obligatoria")]
         public int duration { get; set; }
 
 
+        public string description { get; set; }
+
+
         [Required(ErrorMessage = "La clasification es obligatorio")]
-        [StringLength(100, ErrorMessage = "Máximo permitido: 10 dígitos.")] 
+        [StringLength(100, ErrorMessage = "Máximo permitido: 10 dígitos.")]
         public string clasification { get; set; }
     }
 }
