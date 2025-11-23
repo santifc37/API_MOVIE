@@ -62,14 +62,22 @@ namespace API_MOVIE.Repository
         }
 
 
-        public Task<bool> MovieExistByidAsync(int id)
+        public async Task<bool> MovieExistByidAsync(int id)
         {
-            throw new NotImplementedException();
+            var MovieExists = await _context.Movies
+                .AsNoTracking()
+                .AnyAsync(c => c.id == id);
+
+            return MovieExists;
         }
 
-        public Task<bool> MovieExistByNameAsync(string name)
+        public async Task<bool> MovieExistByNameAsync(string name)
         {
-            throw new NotImplementedException();
+            var MoviesExists = await _context.Movies
+                .AsNoTracking()
+                .AnyAsync(c => c.name == name);
+
+            return MoviesExists;
         }
 
 
