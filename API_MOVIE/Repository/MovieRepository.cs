@@ -80,6 +80,25 @@ namespace API_MOVIE.Repository
             return MoviesExists;
         }
 
+        public async Task<ICollection<Movie>> SearchMoviesByNameAsync(string name)
+        {
+            return await _context.Movies
+                .AsNoTracking()
+                .Where(c => c.name.ToLower().Contains(name.ToLower()))
+                .OrderBy(c => c.name)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<Movie>> GetMoviesLongerThanAsync(int seconds)
+        {
+            return await _context.Movies
+                .AsNoTracking()
+                .Where(m => m.duration > seconds)
+                .OrderBy(m => m.name)
+                .ToListAsync();
+        }
+
+
 
         //Actualizar un registro
         public async Task<bool> UpdateMovieAsync(Movie movie)

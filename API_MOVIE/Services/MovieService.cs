@@ -49,6 +49,15 @@ namespace API_MOVIE.Services
             return movieDto;
         }
 
+        public async Task<ICollection<MovieDto>> GetMoviesLongerThanAsync(int seconds)
+        {
+
+            var movies = await _movieRepository.GetMoviesLongerThanAsync(seconds);
+
+            return _mapper.Map<ICollection<MovieDto>>(movies);
+        }
+
+
         public async Task<bool> DeleteMovieAsync(int id)
         {
 
@@ -99,6 +108,15 @@ namespace API_MOVIE.Services
             throw new NotImplementedException();
         }
 
+        public async Task<ICollection<MovieDto>> SearchMoviesByNameAsync(string name)
+        {
+            var movies = await _movieRepository.SearchMoviesByNameAsync(name);
+
+            // Si no hay coincidencias, devuelves una lista vacía (no error)
+            var moviesDto = _mapper.Map<ICollection<MovieDto>>(movies);
+            return moviesDto;
+        }
+
         public async Task<MovieDto> UpdateMovieAsync(MovieUpdateDto dto, int id)
         {
             //Verificar que si existe
@@ -128,6 +146,8 @@ namespace API_MOVIE.Services
             }
             return _mapper.Map<MovieDto>(existingMovie);
         }
+
+       
     }
     }
 

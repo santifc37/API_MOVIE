@@ -19,14 +19,46 @@ namespace API_MOVIE.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ICollection<MovieDto>>> GetCategoriesAsync()
+        public async Task<ActionResult<ICollection<MovieDto>>> GetMoviesIDAsync()
         {
             var movies = await _movieService.GetMoviesAsync();
             return Ok(movies);
 
         }
 
-        [HttpGet("{id:int}", Name = "GetMovieAsync")]
+        [HttpGet("{duration:int}/Duration_Seconds",Name ="longer")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> GetLongMovies(int duration)
+        {
+            try
+            {
+
+                var movies = await _movieService.GetMoviesLongerThanAsync(duration);
+                if (movies == null || movies.Count == 0)
+                    return NotFound(new { message = $"No hay películas con duracion mayor a {duration} segundos" });
+
+                return Ok(movies);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
+        [HttpGet("searchByName")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ICollection<MovieDto>>> SearchMovies([FromQuery] string name)
+        {
+            var result = await _movieService.SearchMoviesByNameAsync(name);
+            return Ok(result);
+        }
+
+
+        [HttpGet("{id:int}/ID", Name = "GetMovieAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

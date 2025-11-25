@@ -13,6 +13,10 @@ namespace API_MOVIE.Repository.IRepository
 
         Task<bool> MovieExistByNameAsync(string name);
 
+        Task<ICollection<Movie>> SearchMoviesByNameAsync(string name);
+
+        Task<ICollection<Movie>> GetMoviesLongerThanAsync(int seconds);
+
         Task<bool> CreateMovieAsync(Movie movie);
 
         Task<bool> UpdateMovieAsync(Movie movie);
