@@ -62,6 +62,24 @@ namespace API_MOVIE.Repository
             return movies;
         }
 
+        //Consultar peliculas por el genero
+        public async Task<ICollection<Movie>> GetMoviesByGenreAsync(string genre)
+        {
+            return await _context.Movies
+                .Where(m => m.genero.ToLower() == genre.ToLower())
+                .ToListAsync();   
+        }
+
+
+        //Consultar peliculas por el año
+        public async Task<ICollection<Movie>> GetMoviesByYearAsync(int year)
+        {
+            return await _context.Movies
+                .Where(m => m.año == year)
+                .ToListAsync();  // List<T> implementa ICollection<T>
+        }
+
+
         //Existencia de pelicula por id
         public async Task<bool> MovieExistByidAsync(int id)
         {

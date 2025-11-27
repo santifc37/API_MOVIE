@@ -1,4 +1,5 @@
 using API_MOVIE.DAL;
+using API_MOVIE.mapper;
 using API_MOVIE.Repository;
 using API_MOVIE.Repository.IRepository;
 using API_MOVIE.Services;
@@ -9,7 +10,7 @@ using Class_Programmation.Repository.iRepository;
 using Class_Programmation.Services;
 using Class_Programmation.Services.IServices;
 using Microsoft.EntityFrameworkCore;
-using static API_MOVIE.mapper.Mapper;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionMovie")));
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionCategory")));
 builder.Services.AddAutoMapper(x => x.AddProfile<Mappers>());
+
 
 // Dependency injetion for services 
 builder.Services.AddScoped<ICategoryService, CategoryService>();

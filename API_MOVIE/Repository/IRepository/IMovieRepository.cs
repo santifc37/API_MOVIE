@@ -17,6 +17,10 @@ namespace API_MOVIE.Repository.IRepository
 
         Task<ICollection<Movie>> GetMoviesLongerThanAsync(int seconds);
 
+        Task<ICollection<Movie>> GetMoviesByGenreAsync(string genre);
+
+        Task<ICollection<Movie>> GetMoviesByYearAsync(int year);
+
         Task<bool> CreateMovieAsync(Movie movie);
 
         Task<bool> UpdateMovieAsync(Movie movie);

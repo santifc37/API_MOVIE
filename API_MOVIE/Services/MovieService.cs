@@ -67,6 +67,24 @@ namespace API_MOVIE.Services
             return _mapper.Map<MovieDto>(movie);
         }
 
+
+        //BUSCAR PELICULA POR GENERO
+        public async Task<ICollection<MovieDto>> GetMoviesByGenreAsync(string genre)
+        {
+            var movies = await _movieRepository.GetMoviesByGenreAsync(genre);
+            return _mapper.Map<ICollection<MovieDto>>(movies);
+        }
+
+
+        //BUSCAR PELICULA POR AÑO
+        public async Task<ICollection<MovieDto>> GetMoviesByYearAsync(int year)
+        {
+            var movies = await _movieRepository.GetMoviesByYearAsync(year);
+
+            return _mapper.Map<ICollection<MovieDto>>(movies);
+        }
+
+
         //BUSCAR PELICULAS
         public async  Task<ICollection<MovieDto>> GetMoviesAsync()
         {

@@ -20,5 +20,9 @@ namespace API_MOVIE.DAL.Models.Dto
         [Required(ErrorMessage = "La clasification es obligatorio")]
         [StringLength(100, ErrorMessage = "Máximo permitido: 10 dígitos.")]
         public string clasification { get; set; }
+
+        public virtual string genero { get; set; }
+
+        public virtual int año { get; set; }
     }
 }

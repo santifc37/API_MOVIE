@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API_MOVIE.Migrations
 {
     /// <inheritdoc />
-    public partial class API_movie : Migration
+    public partial class Apimovie : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,9 @@ namespace API_MOVIE.Migrations
                     name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     duration = table.Column<int>(type: "int", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    clasification = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
+                    clasification = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    genero = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    año = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

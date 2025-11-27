@@ -16,6 +16,9 @@ namespace API_MOVIE.Services.IServices
 
         Task<ICollection<MovieDto>> GetMoviesLongerThanAsync(int seconds);
 
+        Task<ICollection<MovieDto>> GetMoviesByGenreAsync(string genre);
+
+        Task<ICollection<MovieDto>> GetMoviesByYearAsync(int year);
 
         Task<MovieDto> CreateMovieAsync(MovieCreateDto movieCreateDto);//me crea una pelicula
 

@@ -52,6 +52,53 @@ namespace API_MOVIE.Controllers
             }
         }
 
+        [HttpGet("SearchMovieByGenero")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ICollection<MovieDto>>> GetMoviesByGenre(string genero)
+        {
+            var movies = await _movieService.GetMoviesByGenreAsync(genero);
+
+            if (movies == null || movies.Count == 0)
+            {
+                return NotFound(new { message = $"No hay películas con el género {genero}" });
+            }
+
+            return Ok(movies);
+        }
+
+
+        //Buscar peliculas por año
+        [HttpGet("SearchByYear")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ICollection<MovieDto>>> GetMoviesByYearAsync(int year)
+        {
+            if (year <= 0)
+            {
+                return BadRequest(new { message = "El año debe ser un número válido." });
+            }
+
+            try
+            {
+                var movies = await _movieService.GetMoviesByYearAsync(year);
+
+                if (movies == null || movies.Count == 0)
+                {
+                    return NotFound(new { message = $"No hay películas del año {year}." });
+                }
+
+                return Ok(movies);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                                  new { message = ex.Message });
+            }
+        }
+
+
 
         //Buscar la descripción de una pelicula
         [HttpGet("SearchDescription")]

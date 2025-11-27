@@ -18,5 +18,9 @@ namespace API_MOVIE.DAL.Models.Dto
         public virtual string description { get; set; } = string.Empty;
         [StringLength(10)]
         public virtual string Clasification { get; set; }
+
+        public virtual string genero { get; set; }
+
+        public virtual int año { get; set; }
     }
 }
