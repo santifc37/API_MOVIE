@@ -36,6 +36,7 @@ namespace API_MOVIE.Services
             return _mapper.Map<MovieDto>(movie);
         }
 
+        //PELICULAS QUE DURAN MAS DE CIERTA CANTIDAD
         public async Task<ICollection<MovieDto>> GetMoviesLongerThanAsync(int seconds)
         {
 
@@ -44,43 +45,32 @@ namespace API_MOVIE.Services
             return _mapper.Map<ICollection<MovieDto>>(movies);
         }
 
-
+        //BORRAR PELICULA
         public async Task<bool> DeleteMovieAsync(int id)
         {
+         
+            var movie = await _movieRepository.GetMovieAsync(id)
+                ?? throw new KeyNotFoundException($"No se encontró la película con id {id}");
 
-            //Verifica que si existe la pelicula
-            var existingMovie = await _movieRepository.GetMovieAsync(id);
+            
+            if (!await _movieRepository.DeleteMovieAsync(id))
+                throw new InvalidOperationException("No se pudo borrar la película");
 
-            if (existingMovie == null)
-            {
-                //No existe la pelicula
-                throw new KeyNotFoundException($"No se encontró la categoría con la id {id}");
-
-            }
-
-            //Borra el registro
-            var moviedelete = await _movieRepository.DeleteMovieAsync(id);
-
-            if (!moviedelete)
-            {
-
-                //No se pudo borrar
-                throw new InvalidOperationException("Ocurrió un error al borrar la categoria");
-            }
-            //devuelve el registro borrado
-            return moviedelete;
+            return true;
         }
 
+        //BUSCAR PELICULA
         public async Task<MovieDto> GetMovieAsync(int id)
         {
-            //Busca la pelicula, mapea a dto
+           
             var movie = await _movieRepository.GetMovieAsync(id);
             return _mapper.Map<MovieDto>(movie);
         }
 
+        //BUSCAR PELICULAS
         public async  Task<ICollection<MovieDto>> GetMoviesAsync()
         {
-            //Busca todas las pelculas, mapea a dto
+            
             var movies = await _movieRepository.GetMoviesAsync(); 
             return _mapper.Map<ICollection<MovieDto>>(movies); 
         }
@@ -95,46 +85,35 @@ namespace API_MOVIE.Services
             throw new NotImplementedException();
         }
 
+        //BUSCAR PELICULA POR NOMBRE
         public async Task<ICollection<MovieDto>> SearchMoviesByNameAsync(string name)
         {
             var movies = await _movieRepository.SearchMoviesByNameAsync(name);
 
-            // Si no hay coincidencias, devuelves una lista vacía (no error)
+            
             var moviesDto = _mapper.Map<ICollection<MovieDto>>(movies);
             return moviesDto;
         }
 
+        //ACTUALIZAR UNA PELICULA
         public async Task<MovieDto> UpdateMovieAsync(MovieUpdateDto dto, int id)
         {
-            //Verificar que si existe
-            var existingMovie = await _movieRepository.GetMovieAsync(id);
-            if (existingMovie == null)
-            {
-                //no existe
-                throw new KeyNotFoundException($"No se encontró la categoría con la id {id}");
-            }
+            var movie = await _movieRepository.GetMovieAsync(id)
+                ?? throw new KeyNotFoundException($"Película con id {id} no encontrada.");
 
-            //Verificar si el nuevo nombre ya está en uso por otra categoria
-            var movieExistbyName = await _movieRepository.MovieExistByNameAsync(dto.name);
+            if (await _movieRepository.MovieExistByNameAsync(dto.name))
+                throw new InvalidOperationException($"Ya existe una película con el nombre '{dto.name}'.");
 
-            if (movieExistbyName)
-            {
-                //otra pelicula con el mismo nombre
-                throw new InvalidOperationException($"Ya existe una categoria con nombre {dto.name}");
-            }
-            //manda la pelicula dto para actualizar
-            _mapper.Map(dto, existingMovie);
-            var categoryUpdate = await _movieRepository.UpdateMovieAsync(existingMovie);
+            _mapper.Map(dto, movie);
 
-            if (!categoryUpdate)
-            {
-                //error al actualizar
-                throw new InvalidOperationException("Ocurrió un error en actualizar la categoria");
-            }
-            return _mapper.Map<MovieDto>(existingMovie);
+            if (!await _movieRepository.UpdateMovieAsync(movie))
+                throw new InvalidOperationException("No se pudo actualizar la película.");
+
+            return _mapper.Map<MovieDto>(movie);
         }
 
-       
+
+
     }
-    }
+}
 

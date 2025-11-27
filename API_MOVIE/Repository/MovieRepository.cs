@@ -29,19 +29,20 @@ namespace API_MOVIE.Repository
         //Borrar registro de una pelicula por id
         public async Task<bool> DeleteMovieAsync(int id)
         {
-            var movie = await GetMovieAsync(id);
+          
+            var movieToDelete = await GetMovieAsync(id);
 
-            if (movie == null)
+            if (movieToDelete is null)
             {
                 return false;
             }
 
-            _context.Movies.Remove(movie);
+            _context.Movies.Remove(movieToDelete);
+            var result = await _context.SaveChangesAsync();
 
-            await _context.SaveChangesAsync();
-
-            return true;
+            return result > 0;
         }
+
 
         //Consultar registro por id
         public async Task<Movie> GetMovieAsync(int id)
@@ -55,13 +56,13 @@ namespace API_MOVIE.Repository
         {
             var movies = await _context.Movies
                 .AsNoTracking()
-                .OrderBy(c => c.name)
+                .OrderBy(c => c.id)
                 .ToListAsync();
 
             return movies;
         }
 
-
+        //Existencia de pelicula por id
         public async Task<bool> MovieExistByidAsync(int id)
         {
             var MovieExists = await _context.Movies
@@ -71,6 +72,7 @@ namespace API_MOVIE.Repository
             return MovieExists;
         }
 
+        //Existencia de pelicula por nombre
         public async Task<bool> MovieExistByNameAsync(string name)
         {
             var MoviesExists = await _context.Movies
@@ -80,6 +82,7 @@ namespace API_MOVIE.Repository
             return MoviesExists;
         }
 
+        //Buscar peliculas por nombre 
         public async Task<ICollection<Movie>> SearchMoviesByNameAsync(string name)
         {
             return await _context.Movies
@@ -89,6 +92,7 @@ namespace API_MOVIE.Repository
                 .ToListAsync();
         }
 
+        //Peliculas con cierta cantidad de duracion
         public async Task<ICollection<Movie>> GetMoviesLongerThanAsync(int seconds)
         {
             return await _context.Movies

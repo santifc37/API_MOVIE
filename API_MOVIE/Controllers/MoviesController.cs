@@ -16,6 +16,8 @@ namespace API_MOVIE.Controllers
             _movieService = movieService;
         }
 
+
+        //Buscar todas las peliculas
         [HttpGet("SearchAllMovies")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -23,11 +25,13 @@ namespace API_MOVIE.Controllers
         public async Task<ActionResult<ICollection<MovieDto>>> GetMoviesIDAsync()
         {
             var movies = await _movieService.GetMoviesAsync();
-           
+
             return Ok(movies);
 
         }
 
+
+        //Buscar peliculas con cierta duración
         [HttpGet("DurationMovies")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -48,6 +52,8 @@ namespace API_MOVIE.Controllers
             }
         }
 
+
+        //Buscar la descripción de una pelicula
         [HttpGet("SearchDescription")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -58,7 +64,7 @@ namespace API_MOVIE.Controllers
         {
             var movie = await _movieService.GetMovieAsync(id);
 
-            if (movie == null )
+            if (movie == null)
             {
                 return NotFound(new { message = $"No hay películas con ID {id}" });
             }
@@ -66,6 +72,8 @@ namespace API_MOVIE.Controllers
             return Ok(movie.description);
         }
 
+
+        //Buscar por nombre, Posibilidad que repitan una parte del nombre EJ: Cars , Cars 2
         [HttpGet("searchByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -80,7 +88,8 @@ namespace API_MOVIE.Controllers
         }
 
 
-        [HttpGet("SearchById")]
+        //Buscar por id
+        [HttpGet("SearchById/{id:int}", Name = "GetMovieAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -96,6 +105,8 @@ namespace API_MOVIE.Controllers
             return Ok(movie);
         }
 
+
+        //Crear pelicula
         [HttpPost(Name = "CreateMovieAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -103,32 +114,37 @@ namespace API_MOVIE.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
 
-        public async Task<ActionResult<MovieDto>> CreateMovieAsync([FromBody] MovieCreateDto movieCreateDto)
+        public async Task<ActionResult<MovieDto>> CreateMovieAsync([FromBody] MovieCreateDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-
             }
             try
             {
-                var createMovie = await _movieService.CreateMovieAsync(movieCreateDto);
+                var newMovie = await _movieService.CreateMovieAsync(dto);
                 return CreatedAtRoute(
-                        "GetMovieAsync",
-                        new { Id = createMovie.id },
-                        createMovie
-                    );
+                    routeName: "GetMovieAsync",
+                    routeValues: new { id = newMovie.id },
+                    value: newMovie
+                );
             }
-            catch (InvalidOperationException ex) when (ex.Message.Contains("Ya existe"))
+            catch (InvalidOperationException e) when (e.Message.Contains("Ya existe"))
             {
-                return Conflict(new { message = ex.Message });
+                return Conflict(new { message = e.Message });
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new { message = e.Message }
+                );
             }
         }
 
+
+
+        //Actualizar una pelicula
         [HttpPut("{id:int}", Name = "UpdateMovieAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -141,32 +157,36 @@ namespace API_MOVIE.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-
             }
             try
             {
-                var updatedMovie = await _movieService.UpdateMovieAsync(dto, id);
-                return Ok(updatedMovie);
+                var movieUpdated = await _movieService.UpdateMovieAsync(dto, id);
 
+                return Ok(movieUpdated);
             }
-            catch (KeyNotFoundException ex)
+            catch (KeyNotFoundException e)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(new { message = e.Message });
             }
-
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new { message = e.Message }
+                );
             }
         }
 
+
+
+        //Borrar una pelicula
         [HttpDelete("{id:int}", Name = "deleteMovieAsync")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public async Task<ActionResult> DeleteCategoryAsync(int id)
+        public async Task<ActionResult> DeleteMovieAsync(int id)
         {
 
             try
