@@ -1,4 +1,5 @@
-﻿using API_MOVIE.DAL.Models.Dto;
+﻿using API_MOVIE.DAL.Models;
+using API_MOVIE.DAL.Models.Dto;
 using API_MOVIE.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,7 @@ namespace API_MOVIE.Controllers
         public async Task<ActionResult<ICollection<MovieDto>>> GetMoviesIDAsync()
         {
             var movies = await _movieService.GetMoviesAsync();
+           
             return Ok(movies);
 
         }
@@ -46,14 +48,34 @@ namespace API_MOVIE.Controllers
             }
         }
 
+        [HttpGet("{id:int}/description", Name = "GetDescriptionMovieAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public async Task<ActionResult<MovieDto>> GetDescriptionMovieAsync(int id)
+        {
+            var movie = await _movieService.GetMovieAsync(id);
+
+            if (movie == null )
+            {
+                return NotFound(new { message = $"No hay películas con ID {id}" });
+            }
+
+            return Ok(movie.description);
+        }
 
         [HttpGet("searchByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ICollection<MovieDto>>> SearchMovies([FromQuery] string name)
+        public async Task<ActionResult<ICollection<MovieDto>>> SearchMovies(string name)
         {
             var result = await _movieService.SearchMoviesByNameAsync(name);
+            if (result == null || result.Count == 0) {
+                return NotFound(new { message = $"No hay películas con nombre {name}" });
+            }
             return Ok(result);
         }
 
@@ -67,7 +89,10 @@ namespace API_MOVIE.Controllers
         public async Task<ActionResult<MovieDto>> GetMovieAsync(int id)
         {
             var movie = await _movieService.GetMovieAsync(id);
-
+            if (movie == null)
+            {
+                return NotFound(new { message = $"No hay películas con ID{id}" });
+            }
             return Ok(movie);
         }
 
@@ -161,19 +186,7 @@ namespace API_MOVIE.Controllers
         }
 
 
-        [HttpGet("{id:int}/description", Name = "GetDescriptionMovieAsync")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-
-        public async Task<ActionResult<MovieDto>> GetDescriptionMovieAsync(int id)
-        {
-            var movie = await _movieService.GetMovieAsync(id);
-
-
-            return Ok(movie.description);
-        }
+        
 
     }
 }
