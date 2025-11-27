@@ -24,29 +24,16 @@ namespace API_MOVIE.Services
         //CREATE
         public async Task<MovieDto> CreateMovieAsync(MovieCreateDto movieCreateDto)
         {
-            //Verificar si otra pelicula contiene el nombre
-            var movieExist = await _movieRepository.MovieExistByNameAsync(movieCreateDto.name);
+            if (await _movieRepository.MovieExistByNameAsync(movieCreateDto.name))
+                throw new InvalidOperationException(
+                    $"Ya existe una Película con el nombre '{movieCreateDto.name}'");
 
-            if (movieExist)
-            {
-                //Otra pelicula con el mismo nombre
-                throw new InvalidOperationException($"Ya existe una Peliicula con el nombre '{movieCreateDto.name}'");
-            }
-
-            //Crea el registro de la pelicula
             var movie = _mapper.Map<Movie>(movieCreateDto);
 
-            var movieCreated = await _movieRepository.CreateMovieAsync(movie);
+            if (!await _movieRepository.CreateMovieAsync(movie))
+                throw new InvalidOperationException("Ocurrió un error al crear la película.");
 
-            if (!movieCreated)
-            {
-                //Error no se pudo crear
-                throw new InvalidOperationException("Ocurrió un error al crear");
-            }
-
-            //lo crea en dto para devolver al usuario
-            var movieDto = _mapper.Map<MovieDto>(movie);
-            return movieDto;
+            return _mapper.Map<MovieDto>(movie);
         }
 
         public async Task<ICollection<MovieDto>> GetMoviesLongerThanAsync(int seconds)

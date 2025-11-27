@@ -16,7 +16,7 @@ namespace API_MOVIE.Controllers
             _movieService = movieService;
         }
 
-        [HttpGet]
+        [HttpGet("SearchAllMovies")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -28,7 +28,7 @@ namespace API_MOVIE.Controllers
 
         }
 
-        [HttpGet("{duration:int}/Duration_Seconds",Name ="longer")]
+        [HttpGet("DurationMovies")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetLongMovies(int duration)
@@ -48,7 +48,7 @@ namespace API_MOVIE.Controllers
             }
         }
 
-        [HttpGet("{id:int}/description", Name = "GetDescriptionMovieAsync")]
+        [HttpGet("SearchDescription")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -80,7 +80,7 @@ namespace API_MOVIE.Controllers
         }
 
 
-        [HttpGet("{id:int}/ID", Name = "GetMovieAsync")]
+        [HttpGet("SearchById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
